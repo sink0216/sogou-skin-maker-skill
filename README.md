@@ -3,17 +3,13 @@
 [![Validate skill](https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-我做这个 Skill 的起点，其实不是输入法皮肤。
+制作这个 Skill 的初衷，是在为我家去世的宠物猫制作 Codex 桌宠后，我突然想试一试：是不是也可以用 Codex 制作一款输入法皮肤？没想到真的可以落地。
 
-家里的猫去世后，我用 Codex 给它做了一个桌宠。后来有一天突然想到：既然能做桌宠，能不能也让它待在输入法候选窗旁边，在我打字时继续陪着我？
+于是我就把这次制作过程总结为 Skill，希望能够帮助到其他需要的朋友。
 
-于是我试着用 Codex 做了一款搜狗皮肤。没想到真的做出来了。下面是目前的“猫咪陪你打字”v4.19：
+下面是目前的“猫咪陪你打字”v4.19：
 
 ![猫咪陪你打字 v4.19 候选窗与动画状态](docs/demo/cat-typing-v4.19.png)
-
-做出第一版以后，麻烦才真正开始。候选窗一拉长，猫也跟着变形；padding 调好了，换个状态又不对；静态图挺可爱，眨眼时却像突然换了一张脸。很多问题只有安装到搜狗输入法里才看得见。
-
-我把这次制作里用到的格式规则、设计确认方法和排查步骤整理成了这个 Skill。以后自己再做不用重新踩坑，也希望它能帮到同样想把宠物、喜欢的角色或原创形象放进输入法里的朋友。
 
 支持 macOS `.mssf` 和 Windows 经典 `.ssf`。
 
