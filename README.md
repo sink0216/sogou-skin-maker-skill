@@ -1,70 +1,32 @@
-<p align="center">
-  <img src="docs/assets/sogou-skin-maker-hero.png" alt="三款原创搜狗输入法候选窗与状态栏设计概念" width="100%" />
-</p>
+# Sogou Skin Maker Skill
 
-<h1 align="center">Sogou Skin Maker Skill</h1>
+[![Validate skill](https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<p align="center">
-  <strong>把“帮我做个搜狗皮肤”，变成一套能确认、能复现、能装机检查的工作流。</strong>
-</p>
+用于设计、构建、检查和运行时校准搜狗输入法皮肤的 Codex Skill。
 
-<p align="center">
-  <a href="https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml"><img src="https://github.com/sink0216/sogou-skin-maker-skill/actions/workflows/validate.yml/badge.svg" alt="tests" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6f5bd3.svg" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/macOS-.mssf-f39ab5.svg" alt="macOS mssf" />
-  <img src="https://img.shields.io/badge/Windows-.ssf-75c9c8.svg" alt="Windows ssf" />
-</p>
+支持 macOS `.mssf` 和 Windows 经典 `.ssf`。两个格式使用不同的配置、资源和打包规则，Skill 会先确定目标平台，再进入对应流程。
 
-> 参考图看懂了，装进输入法却全变样？人物被拉伸、候选词挤歪、动画眨眼像抽搐、旧母包删了以后只能重做……这类坑，本 Skill 都踩过，也都写进流程里了。
+## 功能
 
-这是一个面向 Codex 的搜狗输入法皮肤制作 Skill。它不只负责“画一张好看的图”，还会把参考确认、平台分流、资源去重、动画审核、打包验证和真实运行检查串成完整闭环。
+- 搜索并按 SHA-256 去重本地母包、解包目录和构建产物
+- 区分格式参考、视觉参考、精确素材和动作参考
+- 在生产前分别确认参考契约、静态设计和动画
+- 检查候选窗短/长状态、选中态、翻页控件和透明背景
+- 生成并检查 1x/2x PNG 与 APNG
+- 检查皮肤配置编码、图片引用、包结构和变更成员
+- 安装后根据真实候选窗截图校准 padding、锚点和控件占位
+- 保留已确认资源；修复局部问题时限制像素变更范围
 
-## 为什么值得收藏
+## 格式支持
 
-| 你最容易卡住的地方 | Skill 会怎么做 |
-|---|---|
-| **参考图和成品不是一个画风** | 先建立 `必须保留 / 可以调整 / 禁止引入` 契约，确认后才开始画 |
-| **候选窗越改越高、人物还被拉伸** | 把背景、文字布局、人物图层和控件占位分开测量，不用一张大图糊过去 |
-| **眨眼、跑动做出来总有残影** | 固定一个母版，只改指定像素；同时检查实际速度和逐帧放大图 |
-| **旧皮肤文件找不到，又被要求重传** | 先搜本地母包、解包目录、构建产物和哈希记录；能重建就不再索要 |
-| **预览没问题，装机却翻车** | 把预览批准和运行时批准分开；最终以真实搜狗候选窗为准 |
+| 平台 | 格式 | 配置 | 包结构 | 状态 |
+|---|---|---|---|---|
+| macOS | `.mssf` | `skin.plist` | 外层 ZIP 仅含 `Skin`，`Skin` 为内层 ZIP | 支持 |
+| Windows | 经典 `.ssf` | 通常为 UTF-16LE+BOM `skin.ini` | 以实际母包为准，常见为扁平 ZIP | 支持 |
+| Windows | H5 / 现代格式 | 未固定 | 需要官方 schema 或可运行样本 | 不推测 |
 
-## 一张图到可安装皮肤，要过四道门
-
-```mermaid
-flowchart LR
-    A["A · 参考契约<br/>锁定形象与边界"] --> B["B · 静态设计<br/>短栏 / 长栏 / 选中态"]
-    B --> C["C · 动画确认<br/>逐帧图 + 实际速度"]
-    C --> D["生产与打包<br/>结构 / 哈希 / 引用检查"]
-    D --> E["D · 真实运行<br/>候选窗与状态栏验收"]
-```
-
-任何上游设计变化都会重新打开对应确认门。不会拿一句“看着差不多”直接覆盖你已经确认的部分。
-
-## 它能做什么
-
-### 01｜设计不是“凭感觉”
-
-- 拆分形象、构图、配色、装饰和动画参考
-- 同时展示短候选、五候选、长候选与非首项选中状态
-- 检查浅色/深色背景、固定区和拉伸区
-- 明确哪些素材必须原样保留，哪些只作为格式参考
-
-### 02｜动画不是“多画几帧”
-
-- 支持静态皮肤与 APNG 动画
-- 记录帧数、位移、锚点、停留时间和循环方式
-- 候选窗人物、陪伴物、状态栏、星星与控件分别管理
-- 同时输出实际速度预览与放大逐帧检查
-
-### 03｜工程不是“改个后缀”
-
-- macOS `.mssf`：检查双层 ZIP、`skin.plist`、1x/2x 与通知配置
-- Windows 经典 `.ssf`：检查 `skin.ini` 编码、扁平包结构、图层与控件状态
-- 只允许预期成员发生变化，其余资源尽量保持字节一致
-- 校验 CRC、图片引用、APNG 时序、画布、透明边界和构建哈希
-
-## 30 秒安装
+## 安装
 
 ```bash
 git clone https://github.com/sink0216/sogou-skin-maker-skill.git
@@ -72,66 +34,91 @@ mkdir -p ~/.codex/skills
 cp -R sogou-skin-maker-skill/skill/sogou-macos-skin-maker ~/.codex/skills/
 ```
 
-重新打开 Codex，然后直接说：
+重新启动 Codex 以重新加载 Skills。
+
+Skill 的历史调用名是 `sogou-macos-skin-maker`，当前实现同时支持 macOS 和 Windows 经典皮肤。
+
+## 使用
+
+创建新皮肤：
 
 ```text
-$sogou-macos-skin-maker 参考这张图，帮我设计一款 Windows 搜狗输入法皮肤
+$sogou-macos-skin-maker 参考这张图，制作一款 Windows 搜狗输入法皮肤。
 ```
 
-也可以从这些任务开始：
-
-<details>
-<summary><strong>修复一款越改越奇怪的旧皮肤</strong></summary>
+修改现有皮肤，但不继承其设计：
 
 ```text
-$sogou-macos-skin-maker 检查这个皮肤的候选窗布局。不要改变原有样式，只修复人物拉伸和上下 padding。
+$sogou-macos-skin-maker 这个文件只作为格式母包。保留包结构，不要沿用图片、布局和颜色。
 ```
 
-</details>
-
-<details>
-<summary><strong>给已经确认的皮肤增加动画</strong></summary>
+修复布局：
 
 ```text
-$sogou-macos-skin-maker 保持静态设计不变，为左侧角色设计自然眨眼，并给右侧陪伴物增加原地跑动。
+$sogou-macos-skin-maker 保留当前候选窗样式，只修复人物拉伸和上下 padding。
 ```
 
-</details>
-
-<details>
-<summary><strong>只研究格式，不继承旧设计</strong></summary>
+增加动画：
 
 ```text
-$sogou-macos-skin-maker 这个文件只用于参考包结构，不要沿用它的图、布局或颜色。
+$sogou-macos-skin-maker 保持已确认静态设计不变，为左侧角色增加自然眨眼动画。
 ```
 
-</details>
+## 工作流
 
-> Skill 的历史调用名保留为 `sogou-macos-skin-maker`，当前版本已经同时覆盖 macOS 与 Windows 经典皮肤。
+1. **发现母包**：搜索当前工作区、已知路径、Downloads、安装目录和历史构建记录；按哈希登记可复用基线。
+2. **Gate A — 参考契约**：记录必须保留、可以调整和禁止引入的内容。
+3. **Gate B — 静态设计**：检查短栏、五候选、长栏、首项/非首项选中、控件和明暗背景。
+4. **Gate C — 动画**：确认运动部位、锚点、帧数、时序和循环；同时检查实际速度与逐帧放大图。
+5. **生产**：从已确认母版生成 1x/2x 资源，修改必要配置，保留未知字段和无关资源。
+6. **打包检查**：检查 CRC、配置编码、资源引用、APNG 帧、成员变更和包结构。
+7. **Gate D — 运行时**：安装唯一版本，调用真实候选窗并用截图校准。没有运行时证据时保持 Gate D 未完成。
 
-## 自带的三个小工具
+只有用户可以批准 Gate A、B 和 C。上游设计发生变化时，下游批准会失效。
+
+## 工具
+
+Skill 自带三个仅依赖 Python 标准库的脚本：
 
 ```text
 skill/sogou-macos-skin-maker/scripts/
-├── inspect_mssf.py   # 检查 macOS 双层包、图片尺寸与配置引用
-├── pack_mssf.py      # 确定性打包 .mssf
-└── apng_tool.py      # 检查或组装全画布 APNG
+├── inspect_mssf.py  # 检查双层包、plist、图片尺寸、APNG 和资源引用
+├── pack_mssf.py     # 按固定文件顺序和时间戳打包 .mssf
+└── apng_tool.py     # 检查或组装全画布 APNG
 ```
 
-工具脚本仅依赖 Python 标准库。仓库测试：
+检查 macOS 包：
+
+```bash
+python3 skill/sogou-macos-skin-maker/scripts/inspect_mssf.py skin.mssf --json
+```
+
+打包 macOS 皮肤：
+
+```bash
+python3 skill/sogou-macos-skin-maker/scripts/pack_mssf.py path/to/Skin output.mssf
+```
+
+检查 APNG：
+
+```bash
+python3 skill/sogou-macos-skin-maker/scripts/apng_tool.py inspect animation.png
+```
+
+## 验证
+
+仓库测试会检查：
+
+- Skill 元数据和公开安全规则
+- Python 脚本语法
+- `.mssf` 打包/检查往返
+- APNG 组装/检查往返
+
+本地运行：
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
-
-## 安全边界
-
-- 不附带任何成品 `.ssf` / `.mssf`
-- 不附带角色图片、用户素材或专有参考皮肤
-- 不会跨用户复用私有文件
-- 不会为了研究格式，反复要求用户提供同一份皮肤
-- 不会凭空伪造 Windows H5/现代皮肤格式
-- 没有真实运行截图时，不会把“打包成功”说成“实机验收通过”
 
 ## 仓库结构
 
@@ -140,11 +127,16 @@ skill/sogou-macos-skin-maker/
 ├── SKILL.md
 ├── agents/openai.yaml
 ├── references/
+│   ├── design-approval-playbook.md
+│   ├── format-map.md
+│   ├── official-gallery-study.md
+│   ├── qa-playbook.md
+│   └── windows-classic-ssf.md
 └── scripts/
 ```
 
-想补充新的格式检查、失败案例或运行时经验？欢迎阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。但请不要提交成品皮肤、第三方美术或用户私有文件。
+仓库不包含成品 `.ssf`/`.mssf`、角色图片、用户素材或专有参考皮肤。格式研究不会跨用户复用私有文件，也不会要求用户重复提供当前环境中已经存在的皮肤。
 
-如果它替你少走了一次“越改越怪”的弯路，点个 Star 就够了。
+## License
 
-<sub>封面为本项目原创概念示意，不代表仓库附带成品皮肤。代码和文档采用 <a href="LICENSE">MIT License</a>；搜狗输入法及相关商标属于相应权利人，本项目与搜狗官方无关联。详见 <a href="NOTICE.md">NOTICE</a>。</sub>
+代码和文档采用 [MIT License](LICENSE)。搜狗输入法及相关商标属于相应权利人；本项目与搜狗官方无关联。参见 [NOTICE.md](NOTICE.md)。
