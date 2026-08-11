@@ -36,8 +36,6 @@ cp -R sogou-skin-maker-skill/skill/sogou-macos-skin-maker ~/.codex/skills/
 
 重新启动 Codex 以重新加载 Skills。
 
-Skill 的历史调用名是 `sogou-macos-skin-maker`，当前实现同时支持 macOS 和 Windows 经典皮肤。
-
 ## 使用
 
 创建新皮肤：
