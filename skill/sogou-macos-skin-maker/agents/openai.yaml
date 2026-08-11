@@ -1,0 +1,4 @@
+interface:
+  display_name: "搜狗输入法皮肤制作（Mac/Windows）"
+  short_description: "去重母包、确认设计与动画，再制作验证搜狗皮肤"
+  default_prompt: "使用 $sogou-macos-skin-maker 先搜索并复用本地已有母包，区分参考用途，确认静态与动画方案，再制作并真实验证 Mac 或 Windows 搜狗输入法皮肤。"
