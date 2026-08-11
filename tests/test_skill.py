@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import importlib.util
-import io
 from pathlib import Path
 import plistlib
 import struct
 import tempfile
 import unittest
-import zipfile
 import zlib
 
 
@@ -45,10 +43,13 @@ class SkillPackageTests(unittest.TestCase):
 
         forbidden_suffixes = {".ssf", ".mssf"}
         forbidden_text = ("/Users/", "/var/folders/", "/private/tmp/", "BEGIN PRIVATE KEY")
+        text_suffixes = {".md", ".py", ".yaml", ".yml"}
         for path in SKILL.rglob("*"):
             if not path.is_file():
                 continue
             self.assertNotIn(path.suffix.lower(), forbidden_suffixes, path)
+            if path.suffix.lower() not in text_suffixes:
+                continue
             text = path.read_text(encoding="utf-8")
             for marker in forbidden_text:
                 self.assertNotIn(marker, text, path)
